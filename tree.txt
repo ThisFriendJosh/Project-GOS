@@ -1,0 +1,15 @@
+/core
+  engines/catma.py      # machines, policy (η), path math
+  engines/updc.py       # I,S,M,W,n,R → RT,Q,CI
+  engines/game.py       # strategies, payoffs, best-response
+  scorers/spice_v22.py
+  ttp/mapper.py         # AMITT/DISARM/ATT&CK bridge
+/pipeline
+  ingest/*.py
+  normalize/*.py
+  enrich/*.py
+  graph/neo4j_client.py
+/sim
+  tickloop.py
+/ui
+  webapp/ (panes: sitrep, graph, ttps, spice, game, assistant)
