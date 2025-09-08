@@ -1,0 +1,23 @@
+[Unit]
+Description=OSINT Live Dashboard (Streamlit)
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/opt/osint-dashboard
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/osint-dashboard/.venv/bin/streamlit run /opt/osint-dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+Restart=always
+RestartSec=5
+
+# Hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/osint-dashboard
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target
