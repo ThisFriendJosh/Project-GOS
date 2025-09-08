@@ -13,3 +13,25 @@
   tickloop.py
 /ui
   webapp/ (panes: sitrep, graph, ttps, spice, game, assistant)
+
+
+/core
+  /spice # SP!CE v1/v2.2 scorers, schemas, validators 
+  /disarm # DISARM sync, parser, registry, TTP ontology 
+  /mappers # ATT&CK ↔ DISARM ↔ AMITT ↔ platform-events 
+  /metrics # feature extractors, counters, rollups /engines # catma.py, updc.py, game_theory.py 
+/pipeline 
+  /ingest # connectors (X, Telegram, YouTube, RSS, web) 
+  /normalize # text clean, langid, PII, url expand 
+  /enrich # NER, stance/sentiment, topic, bot-likelihood 
+  /graph # neo4j_client.py (KG writes/reads) 
+/sim 
+  tickloop.py policy.py # η scalars, rate limits, demotions  
+/api 
+  fastapi_app.py # REST/WS endpoints schemas.py auth.py 
+/db 
+  ddl.sql # Postgres/Timescale cypher_constraints.cql 
+/ui 
+  webapp/ (SITREP, TTPs, SP!CE, Graph, Paths, Assistant) 
+/ops 
+  docker-compose.yml Makefile
