@@ -27,8 +27,6 @@ intended for documentation and testing.  Real implementations would include
 HTTP requests, authentication and error handling for the respective APIs.
 """
 
-from __future__ import annotations
-
 from datetime import datetime
 from email.utils import parsedate_to_datetime
 from typing import Any, Callable, Dict

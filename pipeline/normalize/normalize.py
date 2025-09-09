@@ -25,8 +25,6 @@ The main entry point is :func:`normalize` which accepts an ``EventIn`` and
 returns a new, normalized ``EventIn``.
 """
 
-from __future__ import annotations
-
 import html
 import re
 import urllib.request

@@ -1,5 +1,15 @@
 from __future__ import annotations
+
+import logging
+from pathlib import Path
 from typing import Any, Dict
+
+try:  # pragma: no cover - optional dependency
+    from neo4j import Driver, GraphDatabase
+except Exception:  # pragma: no cover - fallback when driver not installed
+    Driver = GraphDatabase = object  # type: ignore[misc,assignment]
+
+from api.schemas import EventIn
 
 
 def upsert_event(event: Dict[str, Any]) -> None:
@@ -9,24 +19,16 @@ def upsert_event(event: Dict[str, Any]) -> None:
     """
     # In a real implementation this would use the Neo4j driver.
     return None
+
+
 """Neo4j client utilities for Project GOS.
 
 This module exposes a small wrapper around the official Neo4j Python
-driver.  It provides helpers for writing events and related domain
+driver. It provides helpers for writing events and related domain
 objects to the graph while ensuring the constraints defined in
-``db/cypher_constraints.cql`` are present.  Basic logging and exception
+``db/cypher_constraints.cql`` are present. Basic logging and exception
 handling are included so callers can understand when writes fail.
 """
-
-from __future__ import annotations
-
-import logging
-from pathlib import Path
-from typing import Any, Dict
-
-from neo4j import Driver, GraphDatabase
-
-from api.schemas import EventIn
 
 
 logger = logging.getLogger(__name__)
@@ -65,7 +67,7 @@ class Neo4jClient:
         """Run the constraint statements bundled with the repo.
 
         The statements live in ``db/cypher_constraints.cql`` relative to the
-        repository root.  Each line is executed individually when the client
+        repository root. Each line is executed individually when the client
         is instantiated.
         """
 
@@ -118,45 +120,22 @@ class Neo4jClient:
             "MERGE (e:Event {id: $id}) "
             "SET e.ts=$ts, e.src=$src, e.content=$content, e.feats=$feats"
         )
-        params = {
-            "id": event.event_id,
-            "ts": event.ts.isoformat(),
-            "src": event.src,
-            "content": event.content,
-            "feats": event.feats,
-        }
-        self._run_write(event_query, params)
+        self._run_write(
+            event_query,
+            {
+                "id": event.event_id,
+                "ts": event.ts,
+                "src": event.src,
+                "content": event.content,
+                "feats": event.feats,
+            },
+        )
 
-        if event.actor_id:
-            self.write_actor(event.actor_id)
-            rel = (
-                "MATCH (e:Event {id:$eid}), (a:Actor {id:$aid}) "
-                "MERGE (a)-[:ACTOR_OF]->(e)"
-            )
-            self._run_write(rel, {"eid": event.event_id, "aid": event.actor_id})
-
-        for ttp_id in event.observed_ttp:
-            self.write_ttp(ttp_id)
-            rel = (
-                "MATCH (e:Event {id:$eid}), (t:TTP {id:$tid}) "
+        for ttp in getattr(event, "observed_ttp", []) or []:
+            rel_query = (
+                "MERGE (t:TTP {id: $ttp_id}) "
+                "MERGE (e:Event {id: $event_id}) "
                 "MERGE (e)-[:OBSERVED]->(t)"
             )
-            self._run_write(rel, {"eid": event.event_id, "tid": ttp_id})
+            self._run_write(rel_query, {"ttp_id": ttp, "event_id": event.event_id})
 
-        if event.incident_id:
-            incident_query = "MERGE (i:Incident {id:$id})"
-            self._run_write(incident_query, {"id": event.incident_id})
-            rel = (
-                "MATCH (e:Event {id:$eid}), (i:Incident {id:$iid}) "
-                "MERGE (e)-[:PART_OF]->(i)"
-            )
-            self._run_write(rel, {"eid": event.event_id, "iid": event.incident_id})
-
-        if event.campaign_id:
-            campaign_query = "MERGE (c:Campaign {id:$id})"
-            self._run_write(campaign_query, {"id": event.campaign_id})
-            rel = (
-                "MATCH (e:Event {id:$eid}), (c:Campaign {id:$cid}) "
-                "MERGE (e)-[:PART_OF]->(c)"
-            )
-            self._run_write(rel, {"eid": event.event_id, "cid": event.campaign_id})
