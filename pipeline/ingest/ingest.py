@@ -27,8 +27,6 @@ intended for documentation and testing.  Real implementations would include
 HTTP requests, authentication and error handling for the respective APIs.
 """
 
-from __future__ import annotations
-
 from datetime import datetime
 from email.utils import parsedate_to_datetime
 from typing import Any, Callable, Dict
@@ -195,7 +193,7 @@ CONNECTORS: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]] = {
 }
 
 
-def ingest_event(raw: Dict[str, Any], source: str) -> EventIn:
+def ingest_payload(raw: Dict[str, Any], source: str) -> EventIn:
     """Convert a raw event payload into an :class:`EventIn` instance.
 
     Parameters
