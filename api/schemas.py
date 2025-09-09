@@ -48,3 +48,18 @@ class PolicyApplyRequest(BaseModel):
     s_amplify: float | None = None
     s_share: float | None = None
     campaign_id: Optional[str] = None
+
+
+class UpdcIn(BaseModel):
+    I: float
+    S: float
+    M: float
+    W: float
+    n: int
+    R: float
+
+
+class UpdcOut(BaseModel):
+    RT: float
+    Q: float
+    CI: float
