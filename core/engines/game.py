@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Placeholder engine module for game theory routines.
 
 This stub exists so that engine modules can be imported during testing.
@@ -31,8 +33,6 @@ The project intentionally keeps the implementation light‑weight while still
 providing type hints and thorough documentation so the engine can be readily
 extended for more sophisticated game‑theoretic analysis.
 """
-
-from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Mapping, Sequence, Tuple

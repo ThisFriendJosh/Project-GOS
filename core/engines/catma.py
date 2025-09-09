@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Placeholder engine module for CATMA.
 
 This module currently acts as a stub ensuring that the package structure
@@ -23,8 +25,6 @@ The public API intentionally mirrors common terminology used in the project::
 The functions are small but well documented and type hinted to make them easy
 to reason about during experimentation.
 """
-
-from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Tuple

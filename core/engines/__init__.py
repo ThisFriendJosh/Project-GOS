@@ -5,6 +5,6 @@ modules are kept lightweight to ensure that importing ``core.engines`` works in
 minimal testing environments.
 """
 
-from . import catma, game, updc
+from . import catma, game
 
-__all__ = ["catma", "game", "updc"]
+__all__ = ["catma", "game"]

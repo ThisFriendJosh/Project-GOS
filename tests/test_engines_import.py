@@ -10,4 +10,11 @@ def test_engine_modules_importable() -> None:
 
     assert importlib.import_module("core.engines.catma") is engines.catma
     assert importlib.import_module("core.engines.game") is engines.game
-    assert importlib.import_module("core.engines.updc") is engines.updc
+
+
+def test_scoring_modules_importable() -> None:
+    """Scoring modules should be importable through ``core.scoring``."""
+
+    from core import scoring
+
+    assert importlib.import_module("core.scoring.updc") is scoring.updc
