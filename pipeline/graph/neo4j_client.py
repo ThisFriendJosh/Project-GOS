@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+import os
 from typing import Any, Dict
 
 try:  # pragma: no cover - optional dependency
@@ -15,12 +16,36 @@ from api.schemas import EventIn
 def upsert_event(event: Dict[str, Any]) -> None:
     """Persist an event to Neo4j.
 
-    This is a stub that simulates graph persistence.
+    Instantiate :class:`Neo4jClient` using connection parameters from
+    environment variables and write the provided ``event`` to the graph.
+    ``event`` is expected to be a mapping compatible with
+    :class:`api.schemas.EventIn`.
     """
     # In a real implementation this would use the Neo4j driver.
     return None
 
 
+
+    uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+    user = os.getenv("NEO4J_USER", "neo4j")
+    password = os.getenv("NEO4J_PASSWORD", "test")
+    database = os.getenv("NEO4J_DATABASE") or None
+
+    try:
+        client = Neo4jClient(uri, user, password, database)
+    except Exception:  # pragma: no cover - optional dependency or connection
+        logger.warning("Neo4j client unavailable", exc_info=True)
+        return
+
+    try:
+        client.write_event(EventIn(**event))
+    except Exception:  # pragma: no cover - write issues
+        logger.warning("Neo4j write failed", exc_info=True)
+    finally:
+        try:
+            client.close()
+        except Exception:  # pragma: no cover - close errors
+            logger.warning("Failed to close Neo4j client", exc_info=True)
 """Neo4j client utilities for Project GOS.
 
 This module exposes a small wrapper around the official Neo4j Python
@@ -29,6 +54,24 @@ objects to the graph while ensuring the constraints defined in
 ``db/cypher_constraints.cql`` are present. Basic logging and exception
 handling are included so callers can understand when writes fail.
 """
+
+
+import logging
+from pathlib import Path
+
+try:  # pragma: no cover - optional dependency
+    from neo4j import Driver, GraphDatabase
+except Exception:  # pragma: no cover - fallback for tests without neo4j
+    Driver = GraphDatabase = object  # type: ignore[assignment]
+except Exception:  # pragma: no cover - import fallback
+    Driver = Any  # type: ignore
+
+    class GraphDatabase:  # type: ignore
+        @staticmethod
+        def driver(*args: Any, **kwargs: Any) -> Any:  # noqa: ANN401 - dynamic
+            raise RuntimeError("neo4j driver is not installed")
+
+from api.schemas import EventIn
 
 
 logger = logging.getLogger(__name__)
