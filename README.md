@@ -71,6 +71,27 @@ poetry install
 poetry run python main.py
 ```
 
+## DISARM Tactic Registry
+
+The DISARM data set can be synchronised into the local database and queried via
+the `DisarmRegistry` utility.  By default, an in-memory SQLite database is used;
+set `DATABASE_URL` to override this.  To import tactics, place a `tactics.json`
+file in `external/disarm` or specify a custom path with `DISARM_TACTICS_FILE`,
+then run:
+
+```bash
+python -m core.disarm.sync
+```
+
+After syncing, tactics can be searched programmatically:
+
+```python
+from core.disarm.registry import DisarmRegistry
+
+reg = DisarmRegistry()
+print(reg.search(q="disinformation"))
+```
+
 ## Architecture
 ![Architecture Diagram Placeholder](docs/architecture.png)
 

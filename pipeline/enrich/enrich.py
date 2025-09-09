@@ -36,7 +36,6 @@ The primary entry point is :func:`enrich_event` which accepts an
 populated.
 """
 
-
 import json
 import os
 import re
