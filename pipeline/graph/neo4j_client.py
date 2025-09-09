@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, Dict
 
 
@@ -18,13 +19,14 @@ objects to the graph while ensuring the constraints defined in
 handling are included so callers can understand when writes fail.
 """
 
-from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict
 
-from neo4j import Driver, GraphDatabase
+try:  # pragma: no cover - optional dependency
+    from neo4j import Driver, GraphDatabase
+except Exception:  # pragma: no cover - fallback for tests without neo4j
+    Driver = GraphDatabase = object  # type: ignore[assignment]
 
 from api.schemas import EventIn
 

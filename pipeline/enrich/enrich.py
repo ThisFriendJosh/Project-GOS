@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, Dict, Tuple
 
 
@@ -35,7 +36,6 @@ The primary entry point is :func:`enrich_event` which accepts an
 populated.
 """
 
-from __future__ import annotations
 
 import json
 import os
@@ -207,7 +207,7 @@ def compute_bot_likelihood(text: str) -> float:
 # ---------------------------------------------------------------------------
 
 
-def enrich_event(event: EventIn) -> EventIn:
+def enrich(event: EventIn) -> EventIn:
     """Return a copy of ``event`` with its ``feats`` field populated."""
 
     text = ""
@@ -231,4 +231,5 @@ __all__ = [
     "compute_topics",
     "compute_bot_likelihood",
     "enrich_event",
+    "enrich",
 ]
