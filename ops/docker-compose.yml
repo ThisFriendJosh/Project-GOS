@@ -3,8 +3,16 @@ services:
   api:
     image: python:3.11-slim
     working_dir: /app
-    command: bash -lc "pip install -r requirements.txt && uvicorn api.fastapi_app:app --host 0.0.0.0 --port 8000"
+    command: bash -lc "pip install -r requirements.txt && uvicorn api.main:app --host 0.0.0.0 --port 8000"
     volumes:
       - ./:/app
     ports:
       - "8000:8000"
+  ui:
+    image: python:3.11-slim
+    working_dir: /app
+    command: bash -lc "pip install -r requirements.txt && streamlit run ui/app.py --server.port 8501 --server.address 0.0.0.0"
+    volumes:
+      - ./:/app
+    ports:
+      - "8501:8501"
