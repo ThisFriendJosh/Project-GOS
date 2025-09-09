@@ -1,33 +1,10 @@
-"""Placeholder engine module for UPDC.
-
-This stub ensures the module can be imported via ``core.engines``.
-"""
-
-# I,S,M,W,n,R → RT,Q,CI
-"""UPDC Engine.
+"""UPDC Engine utilities.
 
 This module implements a simple mathematical transformation used by the test
 suite.  The transformation accepts six numeric inputs ``I``, ``S``, ``M``,
 ``W``, ``n`` and ``R`` and returns three derived values ``RT``, ``Q`` and
-``CI``.
-
-The intent of the implementation is to provide a well documented example of a
-small processing engine with proper validation of the inputs.  The exact
-mathematics are intentionally straightforward:
-
-``RT``
-    Response time calculated as ``(I + S + M) / (W + n)``.  ``W + n`` must be
-    non-zero, otherwise a :class:`ValueError` is raised.
-
-``Q``
-    Quality metric derived from ``R / n``.  ``n`` must be a positive integer.
-
-``CI``
-    Composite index defined as ``0.5 * (RT + Q)`` – the mean of ``RT`` and
-    ``Q``.
-
-The :func:`updc_transform` function is the public entry point and returns a
-dataclass :class:`UPDCResult`.
+``CI``.  The intent is to provide a well documented example of a small
+processing engine with proper validation of the inputs.
 """
 
 from __future__ import annotations

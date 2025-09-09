@@ -1,27 +1,12 @@
-"""Placeholder engine module for CATMA.
-
-This module currently acts as a stub ensuring that the package structure
-is importable. Actual engine logic will be added in future revisions.
-"""
-
-# machines, policy (η), path math
-r"""CATMA engine.
+"""CATMA engine utilities.
 
 This module provides small utilities to model *machines* (finite state
 machines), evaluate a policy :math:`\eta` on those machines and perform basic
 path mathematics.  The goal is not to be feature complete but to supply the
-minimal capabilities needed by the tests in this kata.
-
-The public API intentionally mirrors common terminology used in the project::
-
-    >>> m = Machine(start="A", transitions={"A": {"x": "B"}, "B": {}})
-    >>> def policy(state, action):
-    ...     return 0.5
-    >>> evaluate_path(m, ["x"], policy)
-    0.5
-
-The functions are small but well documented and type hinted to make them easy
-to reason about during experimentation.
+minimal capabilities needed by the tests in this kata.  The public API mirrors
+common terminology used in the project and the functions are intentionally
+small but well documented and type hinted to make them easy to reason about
+during experimentation.
 """
 
 from __future__ import annotations

@@ -1,35 +1,10 @@
-"""Placeholder engine module for game theory routines.
+"""Simple game theory utilities for strategy and payoff analysis.
 
-This stub exists so that engine modules can be imported during testing.
-"""
-
-# strategies, payoffs, best-response
-"""Game engine for strategy and payoff analysis.
-
-This module implements a small normal–form game engine.  Games are defined
-by their players, the strategies available to each player and a payoff matrix
-that specifies the outcome for every strategy profile.  The engine provides a
+This module implements a small normal–form game engine.  Games are defined by
+their players, the strategies available to each player and a payoff matrix that
+specifies the outcome for every strategy profile.  The engine provides a
 best‑response solver that can be used to compute optimal strategies against a
 fixed strategy profile of the opponents.
-
-Example
--------
-
->>> players = ["Alice", "Bob"]
->>> strategies = {"Alice": ["C", "D"], "Bob": ["C", "D"]}
->>> payoffs = {
-...     ("C", "C"): (-1, -1),
-...     ("C", "D"): (-3, 0),
-...     ("D", "C"): (0, -3),
-...     ("D", "D"): (-2, -2),
-... }
->>> game = Game(players, strategies, payoffs)
->>> game.best_response("Alice", {"Bob": "C"})
-['D']
-
-The project intentionally keeps the implementation light‑weight while still
-providing type hints and thorough documentation so the engine can be readily
-extended for more sophisticated game‑theoretic analysis.
 """
 
 from __future__ import annotations

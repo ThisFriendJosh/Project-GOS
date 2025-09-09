@@ -1,0 +1,10 @@
+{
+  "dimensions": {
+    "impact": {"weight": 0.6},
+    "detection": {"weight": 0.4}
+  },
+  "modifiers": {
+    "observed": 1.0,
+    "blocked": 0.5
+  }
+}

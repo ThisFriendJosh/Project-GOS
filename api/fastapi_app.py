@@ -5,13 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import Column, DateTime, JSON, MetaData, String, Table, create_engine
 from sqlalchemy.pool import StaticPool
 
-from .schemas import EventIn, SpiceScope, MapTTPRequest, MapTTPResponse
+from .schemas import EventIn, MapTTPRequest, MapTTPResponse
 from .auth import get_api_key
 from sim.tickloop import predict_policy_impact  # root-mode import
 from core.mappers.mapper import map_event_to_ttps
 
 from pipeline.graph.neo4j_client import upsert_event as write_graph
-from core.spice.v22 import build_spice_report_v22
+from pipeline.normalize.normalize import normalize_event
 
 import os
 from datetime import datetime
@@ -55,13 +55,11 @@ def health():
 
 
 def enrich_event(event: dict) -> tuple[dict, dict]:
-    """Stub enrichment that marks events as processed."""
+    """Normalize event content and mark it as processed."""
 
-    feats = event.get("feats", {})
-    feats["enriched"] = True
-    event["feats"] = feats
+    normalized = normalize_event(event)
     meta = {"source": "stub"}
-    return event, meta
+    return normalized, meta
 
 
 @app.post("/ingest/event", dependencies=[Depends(get_api_key)])
@@ -85,15 +83,6 @@ def ingest_event(evt: EventIn):
 def map_ttp(req: MapTTPRequest):
     observed, probs = map_event_to_ttps(req.event)
     return MapTTPResponse(observed_ttp=observed, probs=probs)
-
-
-@app.post("/spice/report", dependencies=[Depends(get_api_key)])
-def spice_report(sc: SpiceScope):
-    try:
-        return build_spice_report_v22(sc.scope, sc.scope_id, sc.window, dsn=engine)
-    except Exception as exc:  # pragma: no cover - defensive
-        raise HTTPException(status_code=500, detail=str(exc))
-
 
 @app.post("/policy/apply", dependencies=[Depends(get_api_key)])
 def policy_apply(campaign_id: str, s_amplify: float = 1.0, s_share: float = 1.0):
