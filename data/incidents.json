@@ -1,0 +1,4 @@
+[
+  {"id": 1, "entity": 3, "date": "2023-01-15", "description": "Data breach at Acme Corp"},
+  {"id": 2, "entity": 1, "date": "2023-02-20", "description": "Phishing attempt on Alice"}
+]
