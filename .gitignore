@@ -1,0 +1,18 @@
+# Python bytecode and cache directories
+__pycache__/
+*.py[cod]
+
+# Package archives
+*.zip
+
+# Distribution / build artifacts
+build/
+dist/
+*.egg-info/
+
+# Virtual environment directories
+.venv/
+.env
+
+# Logs
+*.log
