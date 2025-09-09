@@ -1,0 +1,37 @@
+/core
+  engines/catma.py      # machines, policy (η), path math
+  engines/updc.py       # I,S,M,W,n,R → RT,Q,CI
+  engines/game.py       # strategies, payoffs, best-response
+  scorers/spice_v22.py
+  ttp/mapper.py         # AMITT/DISARM/ATT&CK bridge
+/pipeline
+  ingest/*.py
+  normalize/*.py
+  enrich/*.py
+  graph/neo4j_client.py
+/sim
+  tickloop.py
+/ui
+  webapp/ (panes: sitrep, graph, ttps, spice, game, assistant)
+
+
+/core
+  /spice # SP!CE v1/v2.2 scorers, schemas, validators 
+  /disarm # DISARM sync, parser, registry, TTP ontology 
+  /mappers # ATT&CK ↔ DISARM ↔ AMITT ↔ platform-events 
+  /metrics # feature extractors, counters, rollups /engines # catma.py, updc.py, game_theory.py 
+/pipeline 
+  /ingest # connectors (X, Telegram, YouTube, RSS, web) 
+  /normalize # text clean, langid, PII, url expand 
+  /enrich # NER, stance/sentiment, topic, bot-likelihood 
+  /graph # neo4j_client.py (KG writes/reads) 
+/sim 
+  tickloop.py policy.py # η scalars, rate limits, demotions  
+/api 
+  fastapi_app.py # REST/WS endpoints schemas.py auth.py 
+/db 
+  ddl.sql # Postgres/Timescale cypher_constraints.cql 
+/ui 
+  webapp/ (SITREP, TTPs, SP!CE, Graph, Paths, Assistant) 
+/ops 
+  docker-compose.yml Makefile
