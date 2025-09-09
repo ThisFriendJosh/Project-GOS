@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, Dict
 
 
@@ -47,6 +48,8 @@ field of an :class:`~api.schemas.EventIn`:
 The main entry point is :func:`normalize` which accepts an ``EventIn`` and
 returns a new, normalized ``EventIn``.
 """
+
+
 
 import html
 import re

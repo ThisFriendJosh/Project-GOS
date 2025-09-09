@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, Dict
 from uuid import uuid4
 from datetime import datetime
@@ -26,6 +27,7 @@ The connectors implemented here are intentionally lightweight placeholders
 intended for documentation and testing.  Real implementations would include
 HTTP requests, authentication and error handling for the respective APIs.
 """
+
 
 from datetime import datetime
 from email.utils import parsedate_to_datetime
@@ -194,6 +196,8 @@ CONNECTORS: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]] = {
 
 
 def ingest_event_from_source(raw: Dict[str, Any], source: str) -> EventIn:
+def ingest_raw_event(raw: Dict[str, Any], source: str) -> EventIn:
+def ingest_payload(raw: Dict[str, Any], source: str) -> EventIn:
     """Convert a raw event payload into an :class:`EventIn` instance.
 
     Parameters
