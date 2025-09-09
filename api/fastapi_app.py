@@ -8,6 +8,7 @@ from sqlalchemy.pool import StaticPool
 from .schemas import EventIn, SpiceScope, MapTTPRequest, MapTTPResponse
 from .auth import get_api_key
 from sim.tickloop import predict_policy_impact  # root-mode import
+from core.mappers.mapper import map_event_to_ttps
 
 from pipeline.ingest.ingest import ingest_event as ingest_stage
 from pipeline.normalize.normalize import normalize_event
@@ -71,8 +72,8 @@ def ingest_event(evt: EventIn):
     "/map/ttp", response_model=MapTTPResponse, dependencies=[Depends(get_api_key)]
 )
 def map_ttp(req: MapTTPRequest):
-    # TODO: replace with real mapper
-    return MapTTPResponse(observed_ttp=[], probs={})
+    observed, probs = map_event_to_ttps(req.event)
+    return MapTTPResponse(observed_ttp=observed, probs=probs)
 
 
 @app.post("/spice/report", dependencies=[Depends(get_api_key)])

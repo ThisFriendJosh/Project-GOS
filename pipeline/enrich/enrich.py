@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any, Dict, Tuple
 
 
@@ -228,5 +229,6 @@ __all__ = [
     "compute_sentiment",
     "compute_topics",
     "compute_bot_likelihood",
+    "enrich_event",
     "enrich",
 ]
