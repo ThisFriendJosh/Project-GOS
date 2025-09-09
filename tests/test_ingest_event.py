@@ -14,15 +14,38 @@ def reset_db() -> None:
     metadata.create_all(engine)
 
 
-def test_ingest_event_success():
+def test_ingest_event_success(monkeypatch):
     reset_db()
     client = TestClient(app)
+
+    def fake_urlopen(url):
+        class Resp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                pass
+
+            def geturl(self):
+                return "http://example.com/full"
+
+        return Resp()
+
+    monkeypatch.setattr(
+        "pipeline.normalize.normalize.urllib.request.urlopen", fake_urlopen
+    )
+
     evt = {
         "event_id": "evt1",
         "ts": datetime.utcnow().isoformat(),
         "src": "unit-test",
-        "content": {"msg": "hi"},
+        "content": {
+            "text": "<p>Hello test@example.com http://bit.ly/x</p>"
+        },
+        "feats": {},
+        "observed_ttp": [],
     }
+
     resp = client.post("/ingest/event", json=evt, headers={"X-API-Key": "dev-key"})
     assert resp.status_code == 200
     body = resp.json()
@@ -31,6 +54,12 @@ def test_ingest_event_success():
     with engine.begin() as conn:
         rows = conn.execute(event_table.select()).fetchall()
         assert len(rows) == 1
+        stored = rows[0]._mapping
+        assert (
+            stored["content"]["text"]
+            == "Hello [EMAIL] http://example.com/full"
+        )
+        assert stored["feats"]["lang"] == "en"
 
 
 def test_ingest_event_error(monkeypatch):

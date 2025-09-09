@@ -9,6 +9,7 @@ if str(ROOT) not in sys.path:
 
 from api.schemas import EventIn  # noqa: E402
 from pipeline.normalize import normalize as norm  # noqa: E402
+from pipeline.normalize.normalize import normalize_event  # noqa: E402
 
 
 def test_clean_text():
@@ -77,6 +78,38 @@ def test_normalize_sequence(monkeypatch):
     result = norm.normalize(event)
     assert result.content["text"] == "Hello [EMAIL] http://example.com/full"
     assert result.feats["lang"] == "en"
+
+
+def test_normalize_event(monkeypatch):
+    """``normalize_event`` delegates to :func:`normalize`."""
+
+    def fake_urlopen(url):
+        class Resp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                pass
+
+            def geturl(self):
+                return "http://example.com/full"
+
+        return Resp()
+
+    monkeypatch.setattr(norm.urllib.request, "urlopen", fake_urlopen)
+
+    event = {
+        "event_id": "3",
+        "ts": datetime.datetime.utcnow(),
+        "src": "unit-test",
+        "content": {"text": "<p>Hello test@example.com http://bit.ly/x</p>"},
+        "feats": {},
+        "observed_ttp": [],
+    }
+
+    result = normalize_event(event)
+    assert result["content"]["text"] == "Hello [EMAIL] http://example.com/full"
+    assert result["feats"]["lang"] == "en"
 
 
 def test_normalize_unsupported_language():

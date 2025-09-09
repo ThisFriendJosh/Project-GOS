@@ -35,8 +35,6 @@ The primary entry point is :func:`enrich_event` which accepts an
 populated.
 """
 
-from __future__ import annotations
-
 import json
 import os
 import re
@@ -207,7 +205,7 @@ def compute_bot_likelihood(text: str) -> float:
 # ---------------------------------------------------------------------------
 
 
-def enrich_event(event: EventIn) -> EventIn:
+def enrich_event_model(event: EventIn) -> EventIn:
     """Return a copy of ``event`` with its ``feats`` field populated."""
 
     text = ""
