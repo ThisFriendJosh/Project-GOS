@@ -206,6 +206,7 @@ def compute_bot_likelihood(text: str) -> float:
 # ---------------------------------------------------------------------------
 
 
+def enrich_event_model(event: EventIn) -> EventIn:
 def enrich(event: EventIn) -> EventIn:
     """Return a copy of ``event`` with its ``feats`` field populated."""
 

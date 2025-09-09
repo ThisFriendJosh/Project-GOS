@@ -56,10 +56,14 @@ handling are included so callers can understand when writes fail.
 """
 
 
+
 import logging
 from pathlib import Path
 
 try:  # pragma: no cover - optional dependency
+    from neo4j import Driver, GraphDatabase  # type: ignore
+except Exception:  # pragma: no cover - library missing
+    Driver = GraphDatabase = None  # type: ignore[assignment]
     from neo4j import Driver, GraphDatabase
 except Exception:  # pragma: no cover - fallback for tests without neo4j
     Driver = GraphDatabase = object  # type: ignore[assignment]

@@ -6,9 +6,32 @@ from typing import Any, Dict
 def normalize_event(event: Dict[str, Any]) -> Dict[str, Any]:
     """Normalize the structure of an event.
 
-    For now this is a passthrough stub.
+    This function is a thin wrapper around :func:`normalize`.  It converts
+    the incoming dictionary into an :class:`api.schemas.EventIn` model,
+    delegates the heavy lifting to :func:`normalize` and finally returns the
+    resulting model as a plain dictionary.  The normalisation pipeline
+    performs the following steps on ``content['text']``:
+
+    * Strip HTML markup and collapse whitespace
+    * Detect the language and store it under ``feats['lang']``
+    * Remove obvious PII such as e-mail addresses and phone numbers
+    * Expand shortened URLs by following redirects
+
+    Parameters
+    ----------
+    event:
+        Raw event dictionary.
+
+    Returns
+    -------
+    Dict[str, Any]
+        Normalised event dictionary suitable for further processing.
     """
-    return dict(event)
+
+    from api.schemas import EventIn  # Local import to avoid circular dependency
+
+    normalised = normalize(EventIn(**event))
+    return normalised.model_dump()
 """Text normalization utilities.
 
 This module provides a small normalization pipeline for incoming events.
@@ -157,6 +180,7 @@ def normalize(event: EventIn) -> EventIn:
 
 
 __all__ = [
+    "normalize_event",
     "clean_text",
     "detect_language",
     "remove_pii",
