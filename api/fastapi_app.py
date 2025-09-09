@@ -7,6 +7,7 @@ from sqlalchemy.pool import StaticPool
 
 from .schemas import EventIn, SpiceScope, MapTTPRequest, MapTTPResponse
 from .auth import get_api_key
+from .routers.score import router as score_router
 from sim.tickloop import predict_policy_impact  # root-mode import
 from core.mappers.mapper import map_event_to_ttps
 
@@ -20,7 +21,10 @@ from uuid import uuid4
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite://")
 if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
-        DATABASE_URL, future=True, connect_args={"check_same_thread": False}, poolclass=StaticPool
+        DATABASE_URL,
+        future=True,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
     )
 else:
     engine = create_engine(DATABASE_URL, future=True)
@@ -47,6 +51,8 @@ app = FastAPI(title="Project-GOS API", version="0.1.0")
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
+
+app.include_router(score_router)
 
 
 @app.get("/health")

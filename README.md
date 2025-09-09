@@ -27,6 +27,16 @@ Run tests:
 make test
 ```
 
+### API scoring endpoints
+
+Two scoring engines are exposed via the REST API:
+
+* `POST /score/spice` – generate a SPICE report.  Payload must match
+  `SpiceScope` with fields `scope`, `scope_id` and optional `window`.
+* `POST /score/updc` – compute UPDC metrics.  Payload fields `I`, `S`, `M`,
+  `W`, `n` and `R` map directly to the engine parameters and the response
+  returns `RT`, `Q` and `CI`.
+
 Run database migrations:
 
 ```sh
