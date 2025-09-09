@@ -1,3 +1,16 @@
-.PHONY: up
+.PHONY: up down fmt test migrate
+
 up:
-\tdocker compose -f ops/docker-compose.yml up --build
+	docker compose up --build
+
+down:
+	docker compose down
+
+fmt:
+	black api
+
+test:
+	pytest
+
+migrate:
+	docker compose run --rm api alembic upgrade head
