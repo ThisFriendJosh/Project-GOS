@@ -10,12 +10,12 @@ from .auth import get_api_key
 from sim.tickloop import predict_policy_impact  # root-mode import
 from core.mappers.mapper import map_event_to_ttps
 
-from pipeline.ingest.ingest import ingest_event as ingest_stage
-from pipeline.normalize.normalize import normalize_event
-from pipeline.enrich.enrich import enrich_event
 from pipeline.graph.neo4j_client import upsert_event as write_graph
+from core.spice.v22 import build_spice_report_v22
 
 import os
+from datetime import datetime
+from uuid import uuid4
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite://")
 if DATABASE_URL.startswith("sqlite"):
@@ -54,11 +54,22 @@ def health():
     return {"ok": True}
 
 
+def enrich_event(event: dict) -> tuple[dict, dict]:
+    """Stub enrichment that marks events as processed."""
+
+    feats = event.get("feats", {})
+    feats["enriched"] = True
+    event["feats"] = feats
+    meta = {"source": "stub"}
+    return event, meta
+
+
 @app.post("/ingest/event", dependencies=[Depends(get_api_key)])
 def ingest_event(evt: EventIn):
     try:
-        event = ingest_stage(evt.model_dump())
-        event = normalize_event(event)
+        event = evt.model_dump()
+        event.setdefault("event_id", str(uuid4()))
+        event.setdefault("ts", datetime.utcnow())
         event, meta = enrich_event(event)
         with engine.begin() as conn:
             conn.execute(event_table.insert().values(**event))
@@ -78,8 +89,10 @@ def map_ttp(req: MapTTPRequest):
 
 @app.post("/spice/report", dependencies=[Depends(get_api_key)])
 def spice_report(sc: SpiceScope):
-    # TODO: call SP!CE v2.2 builder
-    return {"ok": True, "scope": sc.scope, "scope_id": sc.scope_id}
+    try:
+        return build_spice_report_v22(sc.scope, sc.scope_id, sc.window, dsn=engine)
+    except Exception as exc:  # pragma: no cover - defensive
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 @app.post("/policy/apply", dependencies=[Depends(get_api_key)])
