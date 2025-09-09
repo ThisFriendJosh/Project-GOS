@@ -1,3 +1,9 @@
+"""Placeholder engine module for game theory routines.
+
+This stub exists so that engine modules can be imported during testing.
+"""
+
+# strategies, payoffs, best-response
 """Game engine for strategy and payoff analysis.
 
 This module implements a small normal–form game engine.  Games are defined

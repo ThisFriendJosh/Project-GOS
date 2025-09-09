@@ -1,3 +1,9 @@
+"""Placeholder engine module for UPDC.
+
+This stub ensures the module can be imported via ``core.engines``.
+"""
+
+# I,S,M,W,n,R → RT,Q,CI
 """UPDC Engine.
 
 This module implements a simple mathematical transformation used by the test
